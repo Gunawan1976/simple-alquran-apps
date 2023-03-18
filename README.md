@@ -1,6 +1,7 @@
 # flutter_alquran
 
-A new Flutter project.
+create this for testing my skill in flutter
+//18032023 arig
 
 ## Getting Started
 

@@ -5,6 +5,10 @@ import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
 
 class DetailSurahController extends GetxController {
+  var kondisiAudio = ''.obs;
+  var isPressed = false.obs;
+  var pause = true.obs;
+  var play = false.obs;
   final player = AudioPlayer(); // Create a player
 
   Future<DetailSurah> getDetailSurah(String id) async {
@@ -23,8 +27,14 @@ class DetailSurahController extends GetxController {
   void audio(String url) async {
     if (url != null) {
       try {
+        await player.stop();
         await player.setUrl(url);
+        print("play audio 1${isPressed}");
+        isPressed.toggle();
         await player.play();
+        pause == isPressed;
+        print("play audio 2${isPressed}");
+        isPressed.toggle();
       } on PlayerException catch (e) {
         // iOS/macOS: maps to NSError.code
         // Android: maps to ExoPlayerException.type
@@ -57,5 +67,19 @@ class DetailSurahController extends GetxController {
         }
       });
     }
+  }
+
+  void pauseAudio() async {
+    print("pause audio 1 ${isPressed}");
+    play == isPressed;
+    player.pause();
+  }
+
+  void resumeAudio() async {
+    player.play();
+  }
+
+  void stopAudio() async {
+    player.stop();
   }
 }

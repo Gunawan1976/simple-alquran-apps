@@ -2,13 +2,13 @@ import 'package:flutter_alquran/app/constants/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_alquran/app/models/surah.dart';
 import 'package:flutter_alquran/app/models/juz_model.dart' as allJuz;
+import 'package:flutter_alquran/app/modules/detail_surah/controllers/detail_surah_controller.dart';
 
 import 'package:get/get.dart';
 
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
-  const HomeView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(

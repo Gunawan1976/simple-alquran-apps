@@ -14,6 +14,14 @@ class DetailSurahView extends GetView<DetailSurahController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Get.back();
+              controller.stopAudio();
+            },
+            icon: Icon(
+              Icons.arrow_back_ios_new,
+            )),
         title: Text(surah.name.transliteration.id),
         centerTitle: true,
       ),
@@ -89,66 +97,96 @@ class DetailSurahView extends GetView<DetailSurahController> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Card(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    child: CircleAvatar(
-                                      backgroundColor: Colors.deepPurple,
-                                      child: Text(
-                                        "${index + 1}",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.deepPurple,
+                                  child: Text(
+                                    "${index + 1}",
+                                    style: TextStyle(
+                                      color: Colors.white,
                                     ),
                                   ),
-                                  Row(
+                                ),
+                              ),
+                              Obx(() => Row(
                                     children: [
+                                      // Obx(() => IconButton(
+                                      //     onPressed: () {
+                                      //       // print(
+                                      //       //     controller.isPressed.toggle());
+                                      //       controller.isPressed.toggle();
+                                      //       controller
+                                      //           .audio(ayat!.audio.primary);
+                                      //       controller.isPressed.toggle();
+                                      //     },
+                                      //     icon: controller.isPressed.value
+                                      //         ? Icon(Icons.pause)
+                                      //         : controller.isPressed.value ==
+                                      //                 null
+                                      //             ? Icon(Icons.play_arrow)
+                                      //             : Icon(
+                                      //                 Icons.play_circle_fill)))
+                                      IconButton(
+                                          onPressed: () {
+                                            controller.isPressed.toggle();
+                                            controller
+                                                .audio(ayat!.audio.primary);
+                                            controller.isPressed.toggle();
+                                          },
+                                          icon: controller.isPressed.value
+                                              ? IconButton(
+                                                  alignment: Alignment.center,
+                                                  onPressed: () {
+                                                    controller.pauseAudio();
+                                                  },
+                                                  icon: Icon(
+                                                    Icons.pause,
+                                                    size: 20,
+                                                  ),
+                                                )
+                                              : controller.isPressed.value ==
+                                                      null
+                                                  ? Icon(
+                                                      Icons.play_arrow_rounded)
+                                                  : Icon(
+                                                      Icons.play_circle_fill,
+                                                      size: 30,
+                                                    )),
+
                                       IconButton(
                                         onPressed: () {},
                                         icon: Icon(
                                           Icons.bookmark_add_outlined,
-                                          color: Colors.deepPurple,
-                                          size: 30,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        onPressed: () {
-                                          controller.audio(ayat!.audio.primary);
-                                        },
-                                        icon: Icon(
-                                          Icons.play_arrow,
-                                          color: Colors.deepPurple,
-                                          size: 35,
                                         ),
                                       ),
                                     ],
-                                  ),
-                                ],
-                              ),
-                            ),
+                                  )),
+                            ],
                           ),
-                          SizedBox(height: 15),
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
                           Text(
                             ayat!.text.arab,
                             style: TextStyle(
                                 fontSize: 25, fontWeight: FontWeight.w600),
                             textAlign: TextAlign.end,
                           ),
-                          SizedBox(height: 15),
                         ],
                       ),
+                      SizedBox(height: 15),
                       Text(
                         ayat.text.transliteration.en,
                         style: TextStyle(

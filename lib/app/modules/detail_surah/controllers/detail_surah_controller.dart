@@ -5,10 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
 
 class DetailSurahController extends GetxController {
-  var kondisiAudio = ''.obs;
   var isPressed = false.obs;
-  var pause = true.obs;
-  var play = false.obs;
   final player = AudioPlayer(); // Create a player
 
   Future<DetailSurah> getDetailSurah(String id) async {
@@ -24,17 +21,17 @@ class DetailSurahController extends GetxController {
     return DetailSurah.fromJson(data);
   }
 
-  void audio(String url) async {
-    if (url != null) {
+  void playAudio(Verse ayat) async {
+    if (ayat.audio.primary != null) {
       try {
         await player.stop();
-        await player.setUrl(url);
-        print("play audio 1${isPressed}");
-        isPressed.toggle();
+        await player.setUrl(ayat.audio.primary);
+        ayat.kondisiAudio = "playing";
+        update();
         await player.play();
-        pause == isPressed;
-        print("play audio 2${isPressed}");
-        isPressed.toggle();
+        ayat.kondisiAudio = "stop";
+        update();
+        await player.stop();
       } on PlayerException catch (e) {
         // iOS/macOS: maps to NSError.code
         // Android: maps to ExoPlayerException.type
@@ -69,17 +66,30 @@ class DetailSurahController extends GetxController {
     }
   }
 
-  void pauseAudio() async {
-    print("pause audio 1 ${isPressed}");
-    play == isPressed;
-    player.pause();
+  void pauseAudio(Verse ayat) async {
+    await player.pause();
+    ayat.kondisiAudio = "pause";
+    update();
   }
 
-  void resumeAudio() async {
-    player.play();
+  void resumeAudio(Verse ayat) async {
+    ayat.kondisiAudio = "playing";
+    update();
+    await player.play();
+    ayat.kondisiAudio = "stop";
+    update();
   }
 
-  void stopAudio() async {
+  void stopAudio(Verse ayat) async {
     player.stop();
+    ayat.kondisiAudio = "stop";
+    update();
+  }
+
+  @override
+  void onClose() {
+    // TODO: implement onClose
+    player.stop();
+    super.onClose();
   }
 }

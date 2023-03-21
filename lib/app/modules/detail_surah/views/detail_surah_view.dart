@@ -14,14 +14,14 @@ class DetailSurahView extends GetView<DetailSurahController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              Get.back();
-              controller.stopAudio();
-            },
-            icon: Icon(
-              Icons.arrow_back_ios_new,
-            )),
+        // leading: IconButton(
+        //     onPressed: () {
+        //       Get.back();
+        //       controller.stopAudio();
+        //     },
+        //     icon: Icon(
+        //       Icons.arrow_back_ios_new,
+        //     )),
         title: Text(surah.name.transliteration.id),
         centerTitle: true,
       ),
@@ -117,59 +117,57 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                   ),
                                 ),
                               ),
-                              Obx(() => Row(
-                                    children: [
-                                      // Obx(() => IconButton(
-                                      //     onPressed: () {
-                                      //       // print(
-                                      //       //     controller.isPressed.toggle());
-                                      //       controller.isPressed.toggle();
-                                      //       controller
-                                      //           .audio(ayat!.audio.primary);
-                                      //       controller.isPressed.toggle();
-                                      //     },
-                                      //     icon: controller.isPressed.value
-                                      //         ? Icon(Icons.pause)
-                                      //         : controller.isPressed.value ==
-                                      //                 null
-                                      //             ? Icon(Icons.play_arrow)
-                                      //             : Icon(
-                                      //                 Icons.play_circle_fill)))
-                                      IconButton(
-                                          onPressed: () {
-                                            controller.isPressed.toggle();
-                                            controller
-                                                .audio(ayat!.audio.primary);
-                                            controller.isPressed.toggle();
-                                          },
-                                          icon: controller.isPressed.value
-                                              ? IconButton(
-                                                  alignment: Alignment.center,
-                                                  onPressed: () {
-                                                    controller.pauseAudio();
-                                                  },
-                                                  icon: Icon(
-                                                    Icons.pause,
-                                                    size: 20,
-                                                  ),
-                                                )
-                                              : controller.isPressed.value ==
-                                                      null
-                                                  ? Icon(
-                                                      Icons.play_arrow_rounded)
-                                                  : Icon(
-                                                      Icons.play_circle_fill,
-                                                      size: 30,
-                                                    )),
-
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(
-                                          Icons.bookmark_add_outlined,
-                                        ),
+                              GetBuilder<DetailSurahController>(
+                                builder: (context) => Row(
+                                  children: [
+                                    (ayat!.kondisiAudio == "stop")
+                                        ? IconButton(
+                                            onPressed: () {
+                                              context.playAudio(ayat);
+                                            },
+                                            icon: Icon(
+                                                Icons.play_circle_fill_rounded))
+                                        : Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              (ayat.kondisiAudio == "playing")
+                                                  ? IconButton(
+                                                      onPressed: () {
+                                                        context
+                                                            .pauseAudio(ayat);
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.pause,
+                                                      ),
+                                                    )
+                                                  : IconButton(
+                                                      onPressed: () {
+                                                        context
+                                                            .resumeAudio(ayat);
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.stop,
+                                                      ),
+                                                    ),
+                                              IconButton(
+                                                onPressed: () {
+                                                  context.stopAudio(ayat);
+                                                },
+                                                icon: Icon(
+                                                  Icons.play_arrow,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                    IconButton(
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        Icons.bookmark_add_outlined,
                                       ),
-                                    ],
-                                  )),
+                                    ),
+                                  ],
+                                ),
+                              )
                             ],
                           ),
                         ),

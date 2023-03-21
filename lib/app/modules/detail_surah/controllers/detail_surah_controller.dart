@@ -7,6 +7,7 @@ import 'package:just_audio/just_audio.dart';
 class DetailSurahController extends GetxController {
   var isPressed = false.obs;
   final player = AudioPlayer(); // Create a player
+  Verse? lastVerse;
 
   Future<DetailSurah> getDetailSurah(String id) async {
     var response =
@@ -24,6 +25,13 @@ class DetailSurahController extends GetxController {
   void playAudio(Verse ayat) async {
     if (ayat.audio.primary != null) {
       try {
+        if (lastVerse == null) {
+          lastVerse = ayat;
+        }
+        lastVerse!.kondisiAudio = "stop";
+        lastVerse = ayat;
+        lastVerse!.kondisiAudio = "stop";
+        update();
         await player.stop();
         await player.setUrl(ayat.audio.primary);
         ayat.kondisiAudio = "playing";

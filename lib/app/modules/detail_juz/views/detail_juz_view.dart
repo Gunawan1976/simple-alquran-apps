@@ -129,26 +129,57 @@ class DetailJuzView extends GetView<DetailJuzController> {
                                   // ),
                                 ],
                               ),
-                              Row(
-                                children: [
-                                  IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(
-                                      Icons.bookmark_add_outlined,
-                                      color: Colors.deepPurple,
-                                      size: 30,
+                              GetBuilder<DetailJuzController>(
+                                builder: (context) => Row(
+                                  children: [
+                                    (ayat.kondisiAudio == "stop")
+                                        ? IconButton(
+                                            onPressed: () {
+                                              context.playAudio(ayat);
+                                            },
+                                            icon: Icon(
+                                                Icons.play_circle_fill_rounded))
+                                        : Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              (ayat.kondisiAudio == "playing")
+                                                  ? IconButton(
+                                                      onPressed: () {
+                                                        context
+                                                            .pauseAudio(ayat);
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.pause,
+                                                      ),
+                                                    )
+                                                  : IconButton(
+                                                      onPressed: () {
+                                                        context
+                                                            .resumeAudio(ayat);
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.stop,
+                                                      ),
+                                                    ),
+                                              IconButton(
+                                                onPressed: () {
+                                                  context.stopAudio(ayat);
+                                                },
+                                                icon: Icon(
+                                                  Icons.play_arrow,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                    IconButton(
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        Icons.bookmark_add_outlined,
+                                      ),
                                     ),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(
-                                      Icons.play_arrow,
-                                      color: Colors.deepPurple,
-                                      size: 35,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                  ],
+                                ),
+                              )
                             ],
                           ),
                         ),

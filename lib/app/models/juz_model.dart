@@ -47,56 +47,42 @@ class Juz {
 }
 
 class Verses {
-  Number? number;
-  Meta? meta;
-  Text? text;
-  Translation? translation;
-  Audio? audio;
-  Tafsir? tafsir;
+  Verses({
+    required this.number,
+    required this.meta,
+    required this.text,
+    required this.translation,
+    required this.audio,
+    //required this.tafsir,
+    this.kondisiAudio = "stop",
+  });
 
-  Verses(
-      {this.number,
-      this.meta,
-      this.text,
-      this.translation,
-      this.audio,
-      this.tafsir});
+  String kondisiAudio;
+  Number number;
+  Meta meta;
+  Text text;
+  Translation translation;
+  Audio audio;
+  //VerseTafsir tafsir;
 
-  Verses.fromJson(Map<String, dynamic> json) {
-    number =
-        json['number'] != null ? new Number.fromJson(json['number']) : null;
-    meta = json['meta'] != null ? new Meta.fromJson(json['meta']) : null;
-    text = json['text'] != null ? new Text.fromJson(json['text']) : null;
-    translation = json['translation'] != null
-        ? new Translation.fromJson(json['translation'])
-        : null;
-    audio = json['audio'] != null ? new Audio.fromJson(json['audio']) : null;
-    tafsir =
-        json['tafsir'] != null ? new Tafsir.fromJson(json['tafsir']) : null;
-  }
+  factory Verses.fromJson(Map<String, dynamic> json) => Verses(
+        number: Number.fromJson(json["number"]),
+        meta: Meta.fromJson(json["meta"]),
+        text: Text.fromJson(json["text"]),
+        translation: Translation.fromJson(json["translation"]),
+        audio: Audio.fromJson(json["audio"]),
+        //tafsir: VerseTafsir.fromJson(json["tafsir"]),
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.number != null) {
-      data['number'] = this.number!.toJson();
-    }
-    if (this.meta != null) {
-      data['meta'] = this.meta!.toJson();
-    }
-    if (this.text != null) {
-      data['text'] = this.text!.toJson();
-    }
-    if (this.translation != null) {
-      data['translation'] = this.translation!.toJson();
-    }
-    if (this.audio != null) {
-      data['audio'] = this.audio!.toJson();
-    }
-    if (this.tafsir != null) {
-      data['tafsir'] = this.tafsir!.toJson();
-    }
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "number": number.toJson(),
+        "meta": meta.toJson(),
+        "text": text.toJson(),
+        "translation": translation.toJson(),
+        "audio": audio.toJson(),
+        //"tafsir": tafsir.toJson(),
+        "kondisiAudio": kondisiAudio,
+      };
 }
 
 class Number {

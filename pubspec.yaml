@@ -11,6 +11,8 @@ dependencies:
   http: 0.13.5
   lottie: 2.3.0
   just_audio: 0.9.31
+  path_provider: 2.0.14
+  sqflite: 2.2.6
   flutter: 
     sdk: flutter
 

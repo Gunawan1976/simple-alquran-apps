@@ -1,11 +1,60 @@
+import 'package:flutter_alquran/app/constants/color.dart';
+import 'package:flutter_alquran/app/db/bookmark.dart';
+import 'package:flutter_alquran/app/models/detail_surah_model.dart';
 import 'package:flutter_alquran/app/models/juz_model.dart';
+import 'package:flutter_alquran/app/models/surah.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:sqflite/sqflite.dart';
 
 class DetailJuzController extends GetxController {
   int index = 0;
   final player = AudioPlayer(); // Create a player
   Verses? lastVerse;
+  DatabaseManager database = DatabaseManager.instance;
+
+  void addBookmark(
+      bool last_read, String surah, Verses ayat, int indexAyat) async {
+    Database db = await database.db;
+    bool isFlaging = false;
+
+    if (last_read == true) {
+      await db.delete("bookmark", where: "last_read = 1");
+    } else {
+      List checkdata = await db.query("bookmark",
+          where:
+              "surah = '${surah.replaceAll("'", "|")}' and ayat = ${ayat.number.inSurah} and juz = ${ayat.meta.juz} and via = 'juz' and index_ayat = $indexAyat and last_read = 0");
+      if (checkdata.length != 0) {
+        isFlaging = true;
+      }
+    }
+    print("controller" + surah);
+
+    if (isFlaging == false) {
+      await db.insert(
+        "bookmark",
+        {
+          "surah": surah.replaceAll("'", "|"),
+          "ayat": ayat.number.inSurah,
+          "ayat_quran": ayat.number.inQuran,
+          "juz": ayat.meta.juz,
+          "via": "juz",
+          "index_ayat": indexAyat,
+          "last_read": last_read == true ? 1 : 0,
+        },
+      );
+
+      Get.back();
+      Get.snackbar("Bookmark", "Berhasil menambah bookmark",
+          colorText: appWhite);
+    } else {
+      Get.back();
+      Get.snackbar("Bookmark", "Sudah tersedia", colorText: appWhite);
+    }
+
+    var data = await db.query("bookmark");
+    print(data);
+  }
 
   void playAudio(Verses? ayat) async {
     if (ayat?.audio?.primary != null) {

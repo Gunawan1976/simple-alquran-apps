@@ -33,58 +33,160 @@ class HomeView extends GetView<HomeController> {
                       style:
                           TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
                     ),
-                    Container(
-                        margin: EdgeInsets.symmetric(vertical: 20),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            gradient: LinearGradient(colors: [
-                              Colors.deepPurple,
-                              Colors.deepPurpleAccent
-                            ])),
-                        child: Material(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(20),
-                          child: InkWell(
-                            onTap: () {
-                              Get.toNamed("last-read");
-                            },
-                            borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              height: 150,
-                              width: Get.width,
-                              child: Stack(children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
+                    GetBuilder<HomeController>(
+                      builder: (c) => FutureBuilder<Map<String, dynamic>?>(
+                        future: c.getLastRead(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Container(
+                              margin: EdgeInsets.symmetric(vertical: 20),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.deepPurple,
+                                    Colors.deepPurpleAccent
+                                  ],
+                                ),
+                              ),
+                              child: Material(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(20),
+                                child: InkWell(
+                                  onTap: () {
+                                    Get.toNamed("last-read");
+                                  },
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Container(
+                                    height: 150,
+                                    width: Get.width,
+                                    child: Stack(children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  SizedBox(width: 10),
+                                                  Text("",
+                                                      style: TextStyle(
+                                                          color: appWhite)),
+                                                ],
+                                              ),
+                                              SizedBox(height: 15),
+                                              Text("Loading.....",
+                                                  style: TextStyle(
+                                                      color: appWhite,
+                                                      fontSize: 30,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              Text("",
+                                                  style: TextStyle(
+                                                      color: appWhite)),
+                                            ]),
+                                      )
+                                    ]),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                          Map<String, dynamic>? dataLastRead = snapshot.data;
+                          return Container(
+                            margin: EdgeInsets.symmetric(vertical: 20),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.deepPurple,
+                                  Colors.deepPurpleAccent
+                                ],
+                              ),
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(20),
+                              child: InkWell(
+                                onLongPress: () {
+                                  if (dataLastRead != null) {
+                                    Get.defaultDialog(
+                                      title:
+                                          "Apakah anda yakin ingin menhapus?",
+                                      middleText: "",
+                                      actions: [
+                                        OutlinedButton(
+                                            onPressed: () => Get.back(),
+                                            child: Text("Batal")),
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              c.deleteBookmark(
+                                                  dataLastRead['id']);
+                                              Get.back();
+                                            },
+                                            child: Text("Ya"))
+                                      ],
+                                    );
+                                  }
+                                },
+                                onTap: () {
+                                  if (dataLastRead != null) {
+                                    //Get.toNamed("last-read");
+                                  }
+                                },
+                                borderRadius: BorderRadius.circular(20),
+                                child: Container(
+                                  height: 150,
+                                  width: Get.width,
+                                  child: Stack(children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            Icon(
-                                              Icons.menu_book,
-                                              color: appWhite,
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.menu_book,
+                                                  color: appWhite,
+                                                ),
+                                                SizedBox(width: 10),
+                                                Text("Terakhir Dibaca",
+                                                    style: TextStyle(
+                                                        color: appWhite)),
+                                              ],
                                             ),
-                                            SizedBox(width: 10),
-                                            Text("Terakhir Dibaca",
+                                            SizedBox(height: 15),
+                                            Text(
+                                                dataLastRead == null
+                                                    ? "Belum ada yang di baca"
+                                                    : dataLastRead['surah']
+                                                        .toString()
+                                                        .replaceAll("|", "'"),
+                                                style: TextStyle(
+                                                    color: appWhite,
+                                                    fontSize: 25,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            Text(
+                                                dataLastRead == null
+                                                    ? "Belum ada yang di baca"
+                                                    : "Juz ${dataLastRead['juz']} | Ayat ${dataLastRead['ayat']}",
                                                 style:
                                                     TextStyle(color: appWhite)),
-                                          ],
-                                        ),
-                                        SizedBox(height: 15),
-                                        Text("Al-Fatihah",
-                                            style: TextStyle(
-                                                color: appWhite,
-                                                fontSize: 30,
-                                                fontWeight: FontWeight.bold)),
-                                        Text("Juz | Ayat",
-                                            style: TextStyle(color: appWhite)),
-                                      ]),
-                                )
-                              ]),
+                                          ]),
+                                    )
+                                  ]),
+                                ),
+                              ),
                             ),
-                          ),
-                        )),
+                          );
+                        },
+                      ),
+                    ),
                     TabBar(
                       labelColor: Colors.deepPurple,
                       unselectedLabelColor: Colors.grey,
@@ -220,7 +322,45 @@ class HomeView extends GetView<HomeController> {
                             );
                           },
                         ),
-                        Text("dataz")
+                        GetBuilder<HomeController>(builder: (c) {
+                          return FutureBuilder<List<Map<String, dynamic>>>(
+                            future: c.getBookmark(),
+                            builder: (context, snapshot) {
+                              if (snapshot.data?.length == 0) {
+                                return Center(
+                                  child:
+                                      Text("Belum ada bookmark yang tersimpan"),
+                                );
+                              }
+                              return ListView.builder(
+                                itemCount: snapshot.data?.length,
+                                itemBuilder: (context, index) {
+                                  Map<String, dynamic>? data =
+                                      snapshot.data?[index];
+                                  return ListTile(
+                                    onTap: () {},
+                                    leading: CircleAvatar(
+                                      backgroundColor: Colors.deepPurple,
+                                      child: Text("${index + 1}"),
+                                    ),
+                                    title: Text(
+                                      "${data?['surah'].toString().replaceAll("|", "'")}",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Text(
+                                        "Juz ${data?['juz'].toString()} | Ayat di surah ${data?['ayat'].toString()} | Via ${data?['via'].toString().capitalize}"),
+                                    trailing: IconButton(
+                                        onPressed: () {
+                                          c.deleteBookmark(data?["id"]);
+                                        },
+                                        icon: Icon(Icons.delete)),
+                                  );
+                                },
+                              );
+                            },
+                          );
+                        }),
                       ]),
                     )
                   ])),

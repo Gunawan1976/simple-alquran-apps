@@ -1,13 +1,61 @@
 import 'dart:convert';
+import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:flutter_alquran/app/constants/color.dart';
+import 'package:flutter_alquran/app/db/bookmark.dart';
 import 'package:flutter_alquran/app/models/detail_surah_model.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
+import 'package:sqflite/sqflite.dart';
 
 class DetailSurahController extends GetxController {
   var isPressed = false.obs;
   final player = AudioPlayer(); // Create a player
   Verse? lastVerse;
+  DatabaseManager database = DatabaseManager.instance;
+
+  void addBookmark(
+      bool last_read, DetailSurah surah, Verse ayat, int indexAyat) async {
+    Database db = await database.db;
+    bool isFlaging = false;
+
+    if (last_read == true) {
+      await db.delete("bookmark", where: "last_read = 1");
+    } else {
+      List checkdata = await db.query("bookmark",
+          where:
+              "surah = '${surah.name.transliteration.id.replaceAll("'", "|")}' and ayat = ${ayat.number.inSurah} and juz = ${ayat.meta.juz} and via = 'surah' and index_ayat = $indexAyat and last_read = 0");
+      if (checkdata.length != 0) {
+        isFlaging = true;
+      }
+    }
+
+    if (isFlaging == false) {
+      await db.insert(
+        "bookmark",
+        {
+          "surah":
+              surah.name.transliteration.id.toString().replaceAll("'", "|"),
+          "ayat": ayat.number.inSurah,
+          "juz": ayat.meta.juz,
+          "via": "surah",
+          "index_ayat": indexAyat,
+          "last_read": last_read == true ? 1 : 0,
+        },
+      );
+
+      Get.back();
+      Get.snackbar("Bookmark", "Berhasil menambah bookmark",
+          colorText: appWhite);
+    } else {
+      Get.back();
+      Get.snackbar("Bookmark", "Sudah tersedia", colorText: appWhite);
+    }
+
+    var data = await db.query("bookmark");
+    print(data);
+  }
 
   Future<DetailSurah> getDetailSurah(String id) async {
     var response =

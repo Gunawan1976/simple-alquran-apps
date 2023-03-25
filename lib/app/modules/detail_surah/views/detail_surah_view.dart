@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_alquran/app/constants/color.dart';
 import 'package:flutter_alquran/app/models/surah.dart';
 import 'package:flutter_alquran/app/models/detail_surah_model.dart' as detail;
+import 'package:flutter_alquran/app/modules/home/controllers/home_controller.dart';
 
 import 'package:get/get.dart';
 
@@ -9,6 +10,7 @@ import '../controllers/detail_surah_controller.dart';
 
 class DetailSurahView extends GetView<DetailSurahController> {
   Surah surah = Get.arguments;
+  final homeC = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -160,7 +162,40 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                             ],
                                           ),
                                     IconButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Get.defaultDialog(
+                                            title: "BOOKMARK",
+                                            middleText: "Pilih Jenis Bookmark",
+                                            actions: [
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  context.addBookmark(
+                                                      true,
+                                                      snapshot!.data!,
+                                                      ayat,
+                                                      index);
+                                                  homeC.update();
+                                                },
+                                                child: Text("LAST READ"),
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.deepPurple),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  context.addBookmark(
+                                                      false,
+                                                      snapshot!.data!,
+                                                      ayat,
+                                                      index);
+                                                },
+                                                child: Text("BOOKMARK"),
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.deepPurple),
+                                              )
+                                            ]);
+                                      },
                                       icon: Icon(
                                         Icons.bookmark_add_outlined,
                                       ),
